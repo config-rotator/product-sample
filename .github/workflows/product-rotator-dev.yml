@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths: 
-      - './configurations/dev/config-dev-manifest.json'   
+      - 'configurations/dev/config-dev-manifest.json'   
   
 jobs:
   create-manifest:
