@@ -8,7 +8,9 @@ on:
       - main
     paths: 
       - 'configurations/dev/config-dev-manifest.json'
-      - 'configurations/**.json'
+      - '/configurations/dev/config-dev-manifest.json'
+      - 'configurations/*.json'
+      - '/configurations/*.json'
   
 jobs:
   create-manifest:
