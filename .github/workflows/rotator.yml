@@ -1,0 +1,80 @@
+name: Rotate  (Dispatch Trigger)
+
+on:
+  workflow_dispatch:
+    inputs:
+      triggering_repo:
+        description: 'Repo that triggered the run (e.g., owner/repo)'
+        required: true
+        type: string
+        # Accessible at the caller as ${{github.repository}}
+      triggering_event:
+        description: 'Event that triggered the run'
+        required: true
+        type: string
+        # Accessible at the caller as ${{github.event_name}}
+      component_sha:
+        description: 'SHA of the commit in the triggering repo'
+        required: true
+        type: string
+        # Accessible at the caller as ${{github.sha}}
+      configuration:
+        description: 'Configuration to use for the deployment'
+        required: true
+        type: string
+        # Must be a configuration defined in the product-rotator.json
+        # defaults are [dev|qa|prod]
+
+jobs:
+  create-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4       
+        with:
+          fetch-depth: 0
+          ref: main
+          # Fetch all history for all branches and tags
+          # This is required to checking the manifest to the repo
+      
+      - name: Set up git config
+        # This is required to checking the manifest to the repo
+        run: |
+          git config --global user.name "GitHub Action: rotator"
+          git config --global user.email "gh-rotator@thetechcollective.eu"
+        
+      - name: Ensure Python
+        # assume python3 is installed, it is in ubuntu-latest, 
+        # but if you are using a different image, you may need to install it
+        runs: |
+          command -v python3 || { echo "Python3 is not installed"; exit 1; }
+
+      - name: Install gh extension 'thetechcollective/rotator'
+        # Visit https://github.com/thetechcollective/gh-rotator for more information
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh extension install thetechcollective/gh-rotator
+
+
+      - name: Receive and Use Trigger Data from Inputs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Triggering repository: ${{ inputs.triggering_repo }}"
+          echo "Triggering event: ${{ inputs.triggering_event }}"
+          echo "Incoming component SHA: ${{ inputs.component_sha }}"
+          echo "Configuration: ${{ inputs.configuration }}"
+          # Set env vars from inputs
+          echo "COMPONENT_REPO=${{ inputs.triggering_repo }}" >> $GITHUB_ENV
+          echo "COMPONET_EVENT=${{ inputs.triggering_event }}" >> $GITHUB_ENV
+          echo "COMPONENT_SHA=${{ inputs.component_sha }}" >> $GITHUB_ENV
+          echo "COMPONENT_CONFIGURATION=${{ inputs.configuration }}" >> $GITHUB_ENV
+
+          gh rotator manifest --repo ${{ inputs.triggering_repo }} --event ${{ inputs.triggering_event }} --sha1 ${{ inputs.component_sha }} --configuration ${{ inputs.configuration }} --verbose
+
+          git add -A
+          git commit -m "Update manifest for ${{ inputs.triggering_repo }} in '${{ inputs.configuration }}' configuration
+            Triggering event was: '${{ inputs.triggering_event }}''
+            Triggering commit was was https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.component_sha }} "
+          git push origin main
