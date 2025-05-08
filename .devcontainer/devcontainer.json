@@ -3,13 +3,22 @@
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {},
-		"ghcr.io/devcontainers/features/github-cli:1": {}
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+ 		"ghcr.io/devcontainers/features/python:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python"
+			]	
+		}
 	},
 
+
 	"initializeCommand": "./.devcontainer/initializeCommand.sh",
-	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+	"postCreateCommand": "./.devcontainer/postCreateCommand.sh"
 
 	// Mount the workspace folder one level higher than the git repo
-	"workspaceMount": "source=${localWorkspaceFolder}/../,target=/workspaces,type=bind",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+	//"workspaceMount": "source=${localWorkspaceFolder}/../,target=/workspaces,type=bind",
+	//"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
 }

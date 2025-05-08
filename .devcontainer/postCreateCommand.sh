@@ -29,15 +29,18 @@ fi
 if [ -e $(dirname $0)/_temp.token ]; then
     echo "$PREFIX Setting up GitHub CLI"
     $(dirname $0)/gh-login.sh postcreate
-    echo "$PREFIX Installing the techcollective/gh-tt gh cli extension"
-    gh extension install thetechcollective/gh-tt
-    echo "$PREFIX Installing the lakruzz/gh-semver gh cli extension"
-    gh extension install lakruzz/gh-semver
-    echo "$PREFIX Installing the gh aliases"    
-    gh alias import .gh_alias.yml --clobber
-
+else
+  if [ "${CODESPACES}" = "true" ] || [ "${GITHUB_CODESPACES}" = "true" ]; then
+    echo "$PREFIX Running in GitHub Codespaces - no need to authenticate the GitHub CLI"
+  fi
 fi
 
+echo "$PREFIX Installing the techcollective/gh-tt gh cli extension"
+gh extension install thetechcollective/gh-tt
+echo "$PREFIX Installing the lakruzz/gh-semver gh cli extension"
+gh extension install lakruzz/gh-semver
+echo "$PREFIX Installing the gh aliases"    
+gh alias import .gh_alias.yml --clobber
 
 echo "$PREFIX SUCCESS"
 exit 0
