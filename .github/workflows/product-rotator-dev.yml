@@ -4,13 +4,14 @@ on:
   # This is the 'dev' configuration
   # trigger on main
   push:
-    branches:
-      - main
     paths: 
       - 'configurations/dev/config-dev-manifest.json'
       - '/configurations/dev/config-dev-manifest.json'
+      - configurations/dev/config-dev-manifest.json
       - 'configurations/*.json'
       - '/configurations/*.json'
+    branches:
+      - main
   
 jobs:
   create-manifest:
