@@ -25,6 +25,11 @@ on:
         # Must be a configuration defined in the product-rotator.json
         # defaults are [dev|qa|prod]
 
+# Add this permissions block
+permissions:
+  contents: write  # This grants write access to repository contents
+
+
 jobs:
   create-manifest:
     runs-on: ubuntu-latest
