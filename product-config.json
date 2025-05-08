@@ -1,0 +1,44 @@
+{
+    "dev": [
+      {
+        "repo": "config-rotator/iac-component",
+        "trigger": "main/LATEST"
+      },
+      {
+        "repo": "config-rotator/backend-component",
+        "trigger": "main/LATEST"
+      },
+      {
+        "repo": "config-rotator/frontend-component",
+        "trigger": "main/LATEST"
+      }
+    ],
+    "qa": [
+      {
+        "repo": "config-rotator/iac-component",
+        "trigger": "tag:\\d+\\.\\d+\\.\\d+rc"
+      },
+      {
+        "repo": "config-rotator/backend-component",
+        "trigger": "tag:\\d+\\.\\d+\\.\\d+rc"
+      },
+      {
+        "repo": "config-rotator/frontend-component",
+        "trigger": "tag:\\d+\\.\\d+\\.\\d+rc"
+      }
+    ],
+    "prod": [
+      {
+        "repo": "config-rotator/iac-component",
+        "trigger": "tag:\\d+\\.\\d+\\.\\d+"
+      },
+      {
+        "repo": "config-rotator/backend-component",
+        "trigger": "tag:\\d+\\.\\d+\\.\\d+"
+      },
+      {
+        "repo": "config-rotator/frontend-component",
+        "trigger": "tag:\\d+\\.\\d+\\.\\d+(rc){0,1}"
+      }
+    ]
+  }

@@ -1,0 +1,30 @@
+[core]
+    editor = nano
+
+[push]
+  default = current
+
+[pull]
+  rebase = true
+
+[alias]
+  undo-commit = reset --soft HEAD^
+  addremove = add -A
+  recommit = commit -C HEAD --amend
+  co = checkout
+  st = status
+  root =  rev-parse --show-toplevel
+  tree = log --graph --full-history --all --color --date=short --pretty=format:\"%Cred%x09%h %Creset%ad%Cblue%d %Creset %s %C(bold)(%an)%Creset\"
+  backward = checkout HEAD^1
+  forward = !git checkout $(git log --all --ancestry-path ^HEAD --format=format:%H | tail -n 1)
+  sha1 = rev-parse --short HEAD
+  get-message = log -1 --pretty=%B
+  sweep = "!f() { git fetch --prune && for branch in $(git branch -vv | grep ': gone]' | awk \"{print \\$1}\"); do git branch -D \"$branch\"; done; }; f"
+  sweep-verbose = "!f() { git fetch --prune && branches=$(git branch -vv | grep ': gone]' | awk '{print $1}'); if [ -z \"$branches\" ]; then echo \"No remote-tracking branches to prune.\"; else echo \"Pruning branches: $branches\"; echo \"$branches\" | xargs git branch -d; fi; }; f"
+  note-this = "!f() { git addremove && git recommit && git push --force && gh note \"$(git get-message) ($(git sha1))\"; }; f"
+
+[project]
+  owner   = thetechcollective
+  number  = 12
+  workon  = Status:In Progress
+  deliver = Status:Delivery Initiated
