@@ -88,7 +88,7 @@ jobs:
 
           git add -A
           git commit -m "Update manifest for ${{ inputs.triggering_repo }} in '${{ inputs.configuration }}' configuration
-            Triggering event was: '${{ inputs.triggering_event }}''
+            Triggering event was: '${{ inputs.triggering_event }}'
             Triggering commit was was https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.component_sha }} "
           git push origin main
 
