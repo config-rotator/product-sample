@@ -80,15 +80,11 @@ jobs:
 
       - name: Commit and Push Manifest Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.CONFIGROTATOR}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
 
-
-          # Configure git to use PAT explicitly
-          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-
           # Add this line to enable workflow triggering
-          git config --global http."https://github.com/".extraheader "AUTHORIZATION: basic $(echo -n x-access-token:${GITHUB_TOKEN} | base64)"
+          git config --global http.'https://github.com/'.extraheader "AUTHORIZATION: basic $(echo -n x-access-token:${GITHUB_TOKEN} | base64)"
 
 
           git add -A
