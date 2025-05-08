@@ -78,6 +78,14 @@ jobs:
 
           gh rotator manifest --repo ${{ inputs.triggering_repo }} --event ${{ inputs.triggering_event }} --sha1 ${{ inputs.component_sha }} --configuration ${{ inputs.configuration }} --verbose
 
+      - name: Commit and Push Manifest Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.CONFIGROTATOR}}
+        run: |
+
+          # Configure git to use PAT explicitly
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
           git add -A
           git commit -m "Update manifest for ${{ inputs.triggering_repo }} in '${{ inputs.configuration }}' configuration
             Triggering event was: '${{ inputs.triggering_event }}''
