@@ -1,0 +1,16 @@
+{
+    "dev": [
+        {
+            "repo": "config-rotator/iac-component",
+            "version": "3564525",
+            "event": "main",
+            "last_update": "2025-05-08 (12:08:29) [UTC]"
+        },
+        {
+            "repo": "config-rotator/backend-component"
+        },
+        {
+            "repo": "config-rotator/frontend-component"
+        }
+    ]
+}
