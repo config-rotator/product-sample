@@ -4,12 +4,12 @@ on:
   # This is the 'dev' configuration
   # trigger on main
   push:
-    paths: 
-      - 'configurations/dev/config-dev-manifest.json'
-      - '/configurations/dev/config-dev-manifest.json'
-      - configurations/dev/config-dev-manifest.json
-      - 'configurations/*.json'
-      - '/configurations/*.json'
+#    paths: 
+#      - 'configurations/dev/config-dev-manifest.json'
+#      - '/configurations/dev/config-dev-manifest.json'
+#      - configurations/dev/config-dev-manifest.json
+#      - 'configurations/*.json'
+#      - '/configurations/*.json'
     branches:
       - main
   
