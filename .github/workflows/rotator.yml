@@ -66,10 +66,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Triggering repository: ${{ inputs.triggering_repo }}"    >> $GITHUB_STEP_SUMMARY
-          echo "Triggering event: ${{ inputs.triggering_event }}"        >> $GITHUB_STEP_SUMMARY
-          echo "Incoming component SHA: ${{ inputs.component_sha }}"     >> $GITHUB_STEP_SUMMARY 
-          echo "Configuration: ${{ inputs.configuration }}"              >> $GITHUB_STEP_SUMMARY
+          echo Update manifest for \`${{ inputs.triggering_repo }}\` in **${{ inputs.configuration }}** configuration                                    >> $GITHUB_STEP_SUMMARY
+          echo Triggering event was: '${{ inputs.triggering_event }}'                                                                                    >> $GITHUB_STEP_SUMMARY
+          echo Triggering commit was: [${{ inputs.component_sha }}](https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.component_sha }}) >> $GITHUB_STEP_SUMMARY
 
           # Set env vars from inputs 
           echo "COMPONENT_REPO=${{ inputs.triggering_repo }}"        >> $GITHUB_ENV
