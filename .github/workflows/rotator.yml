@@ -39,7 +39,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          persist-credentials: false
           # Fetch all history for all branches and tags
           # This is required to checking the manifest to the repo
       
