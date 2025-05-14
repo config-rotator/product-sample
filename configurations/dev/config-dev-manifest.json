@@ -2,9 +2,9 @@
     "dev": [
         {
             "repo": "config-rotator/iac-component",
-            "version": "9b1c5de471466209ede5c563fdab0ce0e2ecc1ea",
-            "event": "push",
-            "last_update": "2025-05-14 (08:32:04) [UTC]"
+            "version": "558bdcbf0c38dd44789dd4367bc2617861193e5c",
+            "event": "main",
+            "last_update": "2025-05-14 (08:33:05) [UTC]"
         },
         {
             "repo": "config-rotator/backend-component",
