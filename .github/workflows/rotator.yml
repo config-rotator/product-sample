@@ -3,23 +3,23 @@ name: Rotate  (Dispatch Trigger)
 on:
   workflow_dispatch:
     inputs:
-      triggering_repo:
-        description: 'Repo that triggered the run (e.g., owner/repo)'
+      repo:
+        description: 'Repo to rotate (owner/repo)'
         required: true
         type: string
         # Accessible at the caller as ${{github.repository}}
-      triggering_event_type:
-        description: 'Event type that triggered the run (branch|tag)'
+      event_type:
+        description: 'Event type (branch|tag)'
         required: true
         type: string
         # Accessible at the caller as ${{github.ref_type}}
-      triggering_event_name:
-        description: 'Event that triggered the run (branch or tag name)'
+      event_name:
+        description: 'Actual name of the branch or tag '
         required: true
         type: string
         # Accessible at the caller as ${{github.ref_name}}
-      triggering_sha:
-        description: 'SHA of the commit in the triggering repo'
+      sha:
+        description: 'SHA of the commit to lock in the manifest'
         required: true
         type: string
         # Accessible at the caller as ${{github.sha}}
