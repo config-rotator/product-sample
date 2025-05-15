@@ -65,17 +65,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Update manifest for **${{ inputs.triggering_repo }}** in **${{ inputs.configuration }}** configuration"                                            >> $GITHUB_STEP_SUMMARY
-          echo "Triggering event was: **\`${{ inputs.triggering_event_type }}:${{ inputs.triggering_event_name }}\`**"                                                                                      >> $GITHUB_STEP_SUMMARY
-          echo "Triggering commit was: [**\`${{ inputs.triggering_sha }}\`**](https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.triggering_sha }})" >> $GITHUB_STEP_SUMMARY
+          echo "Update manifest for **${{ inputs.triggering_repo }}**"                                                                                               >> $GITHUB_STEP_SUMMARY
+          echo "Triggering event was: **\`${{ inputs.event_type }}:${{ inputs.event_name }}\`**"                                                                     >> $GITHUB_STEP_SUMMARY
+          echo "Triggering commit was: [**\`${{ inputs.sha }}\`**](https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }})"                                  >> $GITHUB_STEP_SUMMARY
 
           # Set env vars from inputs 
-          echo "COMPONENT_REPO=${{ inputs.triggering_repo }}"                  >> $GITHUB_ENV
-          echo "COMPONENT_EVENT_TYPE=${{ inputs.triggering_event_type }}"       >> $GITHUB_ENV
-          echo "COMPONENT_EVENT_NAME=${{ inputs.triggering_event_name }}"       >> $GITHUB_ENV
-          echo "COMPONENT_SHA=${{ inputs.triggering_sha }}".                   >> $GITHUB_ENV
+          echo "COMPONENT_REPO=${{ inputs.repo }}"                   >> $GITHUB_ENV
+          echo "COMPONENT_EVENT_TYPE=${{ inputs.event_type }}"       >> $GITHUB_ENV
+          echo "COMPONENT_EVENT_NAME=${{ inputs.event_name }}"       >> $GITHUB_ENV
+          echo "COMPONENT_SHA=${{ inputs.sha }}".                    >> $GITHUB_ENV
 
-          gh rotator lock --repo ${{ inputs.triggering_repo }} --event-type ${{ inputs.triggering_event_type }} --event-name ${{ inputs.triggering_event_name }} --sha ${{ inputs.triggering_sha }} --verbose
+          gh rotator lock --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }} --sha ${{ inputs.sha }} --verbose
 
       - name: Commit and Push Manifest Changes
         env:
@@ -83,8 +83,8 @@ jobs:
         run: |
         
           git add -A
-          git commit -m "Update manifest for ${{ inputs.triggering_repo }} in '${{ inputs.configuration }}' configuration
-            Triggering event was: '${{ inputs.triggering_event }}'
-            Triggering commit was was https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.component_sha }} "
+          git commit -m "Update manifest for ${{ inputs.repo }}
+            Triggering event was: '${{ inputs.event_type }}:${{ inputs.event_name }}'
+            Triggering commit was was https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }} "
           git push origin main
 
