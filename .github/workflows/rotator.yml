@@ -74,6 +74,18 @@ jobs:
           echo "COMPONENT_EVENT_TYPE=${{ inputs.event_type }}"       >> $GITHUB_ENV
           echo "COMPONENT_EVENT_NAME=${{ inputs.event_name }}"       >> $GITHUB_ENV
           echo "COMPONENT_SHA=${{ inputs.sha }}".                    >> $GITHUB_ENV
+
+          # Get the configuration and set it as an output
+          CONFIGURATION=$(gh rotator config --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }})
+          echo "CONFIGURATION=$CONFIGURATION"                        >> $GITHUB_ENV
+
+          echo "COMPONENT_REPO=${{ inputs.repo }}"                   >> $GITHUB_OUTPUT
+          echo "COMPONENT_EVENT_TYPE=${{ inputs.event_type }}"       >> $GITHUB_OUTPUT
+          echo "COMPONENT_EVENT_NAME=${{ inputs.event_name }}"       >> $GITHUB_OUTPUT
+          echo "COMPONENT_SHA=${{ inputs.sha }}".                    >> $GITHUB_OUTPUT
+          echo "CONFIGURATION=$CONFIGURATION"                        >> $GITHUB_OUTPUT
+
+
           echo CONFIGURATION=$( gh rotator config --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }} ) >> $GITHUB_ENV
 
           gh rotator lock --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }} --sha ${{ inputs.sha }} --verbose
@@ -82,11 +94,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-        
+
           git add -A
           git commit -m "Update manifest for ${{ inputs.repo }}
-            Triggering event was: '${{ inputs.event_type }}:${{ inputs.event_name }}'
-            Triggering commit was was https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }} "
+            Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'
+            Triggering commit was was https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }} "
           git push origin main
 
           echo "Successfully updated the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
@@ -113,7 +125,12 @@ jobs:
 
       - name: Do Your Thing
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+          CONFIGURATION:         ${{ needs.lock-manifest.outputs.CONFIGURATION }}
+          COMPONENT_REPO:        ${{ needs.lock-manifest.outputs.COMPONENT_REPO }}
+          COMPONENT_EVENT_TYPE:  ${{ needs.lock-manifest.outputs.COMPONENT_EVENT_TYPE }}
+          COMPONENT_EVENT_NAME:  ${{ needs.lock-manifest.outputs.COMPONENT_EVENT_NAME }}
+          COMPONENT_SHA:         ${{ needs.lock-manifest.outputs.COMPONENT_SHA }}          
         run: |
           # Do your thing here, e.g. deploy the manifest to a cloud provider
           # You can use the inputs from the previous job as needed
