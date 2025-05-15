@@ -74,6 +74,7 @@ jobs:
           echo "COMPONENT_EVENT_TYPE=${{ inputs.event_type }}"       >> $GITHUB_ENV
           echo "COMPONENT_EVENT_NAME=${{ inputs.event_name }}"       >> $GITHUB_ENV
           echo "COMPONENT_SHA=${{ inputs.sha }}".                    >> $GITHUB_ENV
+          echo CONFIGURATION=$( gh rotator config --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }} ) >> $GITHUB_ENV
 
           gh rotator lock --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }} --sha ${{ inputs.sha }} --verbose
 
@@ -87,4 +88,6 @@ jobs:
             Triggering event was: '${{ inputs.event_type }}:${{ inputs.event_name }}'
             Triggering commit was was https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }} "
           git push origin main
+
+          echo "Successfully updated the manifest for the ${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
 
