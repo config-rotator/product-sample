@@ -30,7 +30,7 @@ permissions:
 
 
 jobs:
-  create-manifest:
+  lock-manifest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -89,5 +89,7 @@ jobs:
             Triggering commit was was https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }} "
           git push origin main
 
-          echo "Successfully updated the manifest for the ${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
+          echo "Successfully updated the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
+
+      
 
