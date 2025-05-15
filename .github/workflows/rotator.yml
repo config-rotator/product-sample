@@ -142,3 +142,5 @@ jobs:
           echo "Triggering commit was was: [**\`${{ env.COMPONENT_SHA }}\`**](https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }})"  >> $GITHUB_STEP_SUMMARY
 
           echo `gh rotator config --configuration ${{ env.CONFIGURATION }} >> $GITHUB_STEP_SUMMARY
+          MANIFEST=$( gh rotator config --configuration ${{ env.CONFIGURATION }} )
+          echo "$MANIFEST" >> $GITHUB_STEP_SUMMARY
