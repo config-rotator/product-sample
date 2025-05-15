@@ -8,22 +8,21 @@ on:
         required: true
         type: string
         # Accessible at the caller as ${{github.repository}}
-      triggering_event:
-        description: 'Event that triggered the run'
+      triggering_event_type:
+        description: 'Event type that triggered the run (branch|tag)'
         required: true
         type: string
-        # Accessible at the caller as ${{github.event_name}}
-      component_sha:
+        # Accessible at the caller as ${{github.ref_type}}
+      triggering_event_name:
+        description: 'Event that triggered the run (branch or tag name)'
+        required: true
+        type: string
+        # Accessible at the caller as ${{github.ref_name}}
+      triggering_sha:
         description: 'SHA of the commit in the triggering repo'
         required: true
         type: string
         # Accessible at the caller as ${{github.sha}}
-      configuration:
-        description: 'Configuration to use for the deployment'
-        required: true
-        type: string
-        # Must be a configuration defined in the product-rotator.json
-        # defaults are [dev|qa|prod]
 
 # Add this permissions block
 permissions:
@@ -67,23 +66,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Update manifest for **${{ inputs.triggering_repo }}** in **${{ inputs.configuration }}** configuration"                                            >> $GITHUB_STEP_SUMMARY
-          echo "Triggering event was: **\`${{ inputs.triggering_event }}\`**"                                                                                      >> $GITHUB_STEP_SUMMARY
-          echo "Triggering commit was: [**\`${{ inputs.component_sha }}\`**](https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.component_sha }})" >> $GITHUB_STEP_SUMMARY
+          echo "Triggering event was: **\`${{ inputs.triggering_event_type }}:${{ inputs.triggering_event_name }}\`**"                                                                                      >> $GITHUB_STEP_SUMMARY
+          echo "Triggering commit was: [**\`${{ inputs.triggering_sha }}\`**](https://github.com/${{ inputs.triggering_repo }}/commit/${{ inputs.triggering_sha }})" >> $GITHUB_STEP_SUMMARY
 
           # Set env vars from inputs 
-          echo "COMPONENT_REPO=${{ inputs.triggering_repo }}"        >> $GITHUB_ENV
-          echo "COMPONET_EVENT=${{ inputs.triggering_event }}"       >> $GITHUB_ENV
-          echo "COMPONENT_SHA=${{ inputs.component_sha }}"           >> $GITHUB_ENV
-          echo "COMPONENT_CONFIGURATION=${{ inputs.configuration }}" >> $GITHUB_ENV
+          echo "COMPONENT_REPO=${{ inputs.triggering_repo }}"                  >> $GITHUB_ENV
+          echo "COMPONENT_EVENT_TYPE=${{ inputs.triggering_event_type }}"       >> $GITHUB_ENV
+          echo "COMPONENT_EVENT_NAME=${{ inputs.triggering_event_name }}"       >> $GITHUB_ENV
+          echo "COMPONENT_SHA=${{ inputs.triggering_sha }}".                   >> $GITHUB_ENV
 
-          gh rotator manifest --repo ${{ inputs.triggering_repo }} --event ${{ inputs.triggering_event }} --sha1 ${{ inputs.component_sha }} --configuration ${{ inputs.configuration }} --verbose
+          gh rotator lock --repo ${{ inputs.triggering_repo }} --event-type ${{ inputs.triggering_event_type }} --event-name ${{ inputs.triggering_event_name }} --sha ${{ inputs.triggering_sha }} --verbose
 
       - name: Commit and Push Manifest Changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-
-         
+        
           git add -A
           git commit -m "Update manifest for ${{ inputs.triggering_repo }} in '${{ inputs.configuration }}' configuration
             Triggering event was: '${{ inputs.triggering_event }}'
