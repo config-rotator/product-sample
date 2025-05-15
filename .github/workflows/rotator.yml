@@ -143,6 +143,6 @@ jobs:
 
           MANIFEST=$( gh rotator manifest --configuration ${{ env.CONFIGURATION }} )
 
-          echo "```json"       >> $GITHUB_STEP_SUMMARY
-          echo "$MANIFEST" >> $GITHUB_STEP_SUMMARY
-          echo "```"       >> $GITHUB_STEP_SUMMARY
+          echo '```json'       >> $GITHUB_STEP_SUMMARY
+          echo "$MANIFEST"     >> $GITHUB_STEP_SUMMARY
+          echo '```'           >> $GITHUB_STEP_SUMMARY
