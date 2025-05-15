@@ -71,7 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Update manifest for **${{ inputs.triggering_repo }}**" >> $GITHUB_STEP_SUMMARY
+          echo "Update manifest for **${{ inputs.repo }}**" >> $GITHUB_STEP_SUMMARY
           echo "Triggering event was: **\`${{ inputs.event_type }}:${{ inputs.event_name }}\`**" >> $GITHUB_STEP_SUMMARY
           echo "Triggering commit was: [**\`${{ inputs.sha }}\`**](https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }})" >> $GITHUB_STEP_SUMMARY
 
