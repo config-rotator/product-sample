@@ -1,0 +1,53 @@
+{
+    "dev": [
+      {
+        "repo": "config-rotator/iac-component",
+        "ref_type": "branch",
+        "ref_name": "main"
+      },
+      {
+        "repo": "config-rotator/frontend-component",
+        "ref_type": "branch",
+        "ref_name": "main"
+      },
+      {
+        "repo": "config-rotator/backend-component",
+        "ref_type": "branch",
+        "ref_name": "main"
+      }
+    ],
+    "qa": [
+      {
+        "repo": "config-rotator/iac-component",
+        "ref_type": "tag",
+        "ref_name": "\\d+\\.\\d+\\.\\d+rc"
+      },
+      {
+        "repo": "config-rotator/frontend-component",
+        "ref_type": "tag",
+        "ref_name": "\\d+\\.\\d+\\.\\d+rc"
+      },
+      {
+        "repo": "config-rotator/backend-component",
+        "ref_type": "tag",
+        "ref_name": "\\d+\\.\\d+\\.\\d+rc"
+      }
+    ],
+    "prod": [
+      {
+        "repo": "config-rotator/iac-component",
+        "ref_type": "tag",
+        "ref_name": "\\d+\\.\\d+\\.\\d+"
+      },
+      {
+        "repo": "config-rotator/frontend--component",
+        "ref_type": "tag",
+        "ref_name": "\\d+\\.\\d+\\.\\d+"
+      },
+      {
+        "repo": "config-rotator/backend-component",
+        "ref_type": "tag",
+        "ref_name": "\\d+\\.\\d+\\.\\d+"
+      }
+    ]
+  }
