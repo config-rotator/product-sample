@@ -91,5 +91,43 @@ jobs:
 
           echo "Successfully updated the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
 
-      
+  deploy-iac:
+    runs-on: ubuntu-latest
+    needs: lock-manifest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4       
+
+      - name: Ensure Python
+        # assume python3 is installed, it is in ubuntu-latest, 
+        # but if you are using a different image, you may need to install it
+        run: |
+          command -v python3 || { echo "Python3 is not installed"; exit 1; }
+
+      - name: Install gh extension 'thetechcollective/rotator'
+        # Visit https://github.com/thetechcollective/gh-rotator for more information
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh extension install thetechcollective/gh-rotator
+
+      - name: Do Your Thing
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Do your thing here, e.g. deploy the manifest to a cloud provider
+          # You can use the inputs from the previous job as needed
+          echo "Deploying the manifest for '${{ env.CONFIGURATION }}' configuration"
+          echo "Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'"
+          echo "Triggering commit was was: [**\`${{ env.COMPONENT_SHA }}\`**](https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }})"
+
+          echo "Deploying the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
+          echo "Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'"  >> $GITHUB_STEP_SUMMARY
+          echo "Triggering commit was was: [**\`${{ env.COMPONENT_SHA }}\`**](https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }})"  >> $GITHUB_STEP_SUMMARY
+
+          echo `gh rotator config --configuration ${{ env.CONFIGURATION }} >> $GITHUB_STEP_SUMMARY
+
+
+
+
 
