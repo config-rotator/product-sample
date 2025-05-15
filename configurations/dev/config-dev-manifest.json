@@ -1,0 +1,25 @@
+{
+    "dev": [
+        {
+            "repo": "config-rotator/iac-component",
+            "ref_type": "branch",
+            "ref_name": "main",
+            "version": "723782e5f2ee868adc2f64c424bb2e669d7ab27c",
+            "last_update": "2025-05-15 (14:20:18) [UTC]"
+        },
+        {
+            "repo": "config-rotator/frontend-component",
+            "ref_type": "branch",
+            "ref_name": "",
+            "version": "",
+            "last_update": ""
+        },
+        {
+            "repo": "config-rotator/backend-component",
+            "ref_type": "branch",
+            "ref_name": "",
+            "version": "",
+            "last_update": ""
+        }
+    ]
+}
