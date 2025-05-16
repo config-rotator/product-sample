@@ -1,40 +1,42 @@
-name: dev deploy
+name: Dev Deploy
 
 on:
   # This is the 'dev' configuration
-  # trigger on main
+  # trigger on push to main
   push:
     branches:
       - main
-    path: 
-      - './configurations/dev/config-dev-manifest.json'  
-  
+    paths:
+      - 'configurations/dev/config-dev-manifest.json'      
+
+permissions:
+  actions: write
   
 jobs:
-  create-manifest:
+  read-manifest:
     runs-on: ubuntu-latest
-    # enable gh cli
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
       
-      - name: Ensure Python
-        # assume python3 is installed, it is in ubuntu-latest, 
-        # but if you are using a different image, you may need to install it
-        run: |
-          command -v python3 || { echo "Python3 is not installed"; exit 1; }
-
       - name: Install gh extension 'thetechcollective/rotator'
         # Visit https://github.com/thetechcollective/gh-rotator for more information
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          command -v python3 || { echo "Python3 is not installed"; exit 1; }
           gh extension install thetechcollective/gh-rotator
 
-      - name: Use the gh-rotator to read a manifest
+      - name: Read the manifest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh rotator manifest --configuration dev >>$GITHUB_STEP_SUMMARY
 
-          
+          MANIFEST=$(gh rotator manifest -configuration dev)
+          echo '```json```' >> $GITHUB_STEP_SUMMARY
+          echo "$MANIFEST"  >> $GITHUB_STEP_SUMMARY
+          echo '```'        >> $GITHUB_STEP_SUMMARY
+
