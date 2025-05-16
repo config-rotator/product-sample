@@ -37,7 +37,7 @@ jobs:
         run: |
 
           MANIFEST=$(gh rotator manifest --configuration dev)
-          echo '```json```' >> $GITHUB_STEP_SUMMARY
+          echo '```json'    >> $GITHUB_STEP_SUMMARY
           echo "$MANIFEST"  >> $GITHUB_STEP_SUMMARY
           echo '```'        >> $GITHUB_STEP_SUMMARY
 
