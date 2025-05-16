@@ -96,7 +96,7 @@ jobs:
 
       - name: Commit and Push Manifest Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
         run: |
           git add -A
           git commit -m "Update manifest for ${{ inputs.repo }}
