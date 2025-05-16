@@ -96,12 +96,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
         run: |
-          unset GITHUB_ACTOR
+#          unset GITHUB_ACTOR
           git add -A
           git commit -m "Update manifest for ${{ inputs.repo }}
             Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'
             Triggering commit was was https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }} "
-          git remote set-url origin https://x-access-token:${{ secrets.ROTATOR_COMMIT_TOKEN }}@github.com/${{ github.repository }}
+#          git remote set-url origin https://x-access-token:${{ secrets.ROTATOR_COMMIT_TOKEN }}@github.com/${{ github.repository }}
           git push origin main
 
           echo "Successfully updated the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
