@@ -2,12 +2,13 @@ name: Dev Deploy
 
 on:
   # This is the 'dev' configuration
+  workflow_dispatch:
   # trigger on push to main
   push:
     branches:
       - main
-    paths:
-      - 'configurations/dev/config-dev-manifest.json'      
+#    paths:
+#      - 'configurations/dev/config-dev-manifest.json'      
 
 permissions:
   actions: write
