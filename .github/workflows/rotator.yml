@@ -95,6 +95,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
         run: |
+          unset GITHUB_ACTOR
           git add -A
           git commit -m "Update manifest for ${{ inputs.repo }}
             Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'
