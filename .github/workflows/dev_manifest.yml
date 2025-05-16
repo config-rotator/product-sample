@@ -1,0 +1,76 @@
+name: dev deploy
+
+on:
+  # This is the 'dev' configuration
+  # trigger on main
+  push:
+    branches:
+      - main
+    path: 
+      - './configurations/dev/config-dev-manifest.json'  
+  
+  
+jobs:
+  create-manifest:
+    runs-on: ubuntu-latest
+    # enable gh cli
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@4
+      
+      - name: Ensure Python
+        # assume python3 is installed, it is in ubuntu-latest, 
+        # but if you are using a different image, you may need to install it
+        runs: |
+          command -v python3 || { echo "Python3 is not installed"; exit 1; }
+
+      - name: Install gh extension 'thetechcollective/rotator'
+        # Visit https://github.com/thetechcollective/gh-rotator for more information
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh extension install thetechcollective/gh-rotator
+
+      - name: Use the gh-rotator to read a manifest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # You can use the gh rotator to read the SHA for a specific repo in a specific manifest
+          # The following command will read the SHA for the repos in the dev configuration
+          # The assumprtion being that these reps have already built either packages or images, 
+          # following a naming convention that you know — which includes the SHA
+          # and pushed them to a registry or artefact repository you know about
+          # where you can now pull them from
+          # ... and do your thing!
+
+          # An example could be:
+          # If you have an IaC stack repo with a Pulumi or Terraform stack that you want to deploy to a dev environment,
+          # you can use the SHAs of imaginary Backend and Frontend images to pull
+          # You configuration file should then mention
+          # - the IaC stack repo
+          # - the Frontend repo
+          # - the Backend repo
+          # now, if any of the repos change, the the rotator will be triggered - and eventially you will end up here.
+
+          # Cahce the SHAs for the repos in the dev configuration in local env vars
+          TT_SHA=$(gh rotator version --repo thetechcollective/gh-tt --configuration dev)
+          DOWNSTREAM_SHA=$(gh rotator version --repo thetechcollective/gh-downstream --configuration dev)
+          SEMVER_SHA=$(gh rotator version --repo lakruzz/gh-semver --configuration dev)
+
+          # Cache the same SHAs in the github env vars so you can access them in the next step
+          echo "TT_SHA=${TT_SHA}"                                 >> $GITHUB_ENV
+          echo "DOWNSTREAM_SHA=${DOWNSTREAM_SHA}"                 >> $GITHUB_ENV
+          echo "SEMVER_SHA=${SEMVER_SHA}"                         >> $GITHUB_ENV
+
+          # Print the SHAs to the github step summary
+          # This will be visible in the Actions tab of the repo
+          echo 'dev' configuration:                                 >> $GITHUB_STEP_SUMMARY
+          echo "thetechcollective/gh-tt: $TT_SHA"                   >> $GITHUB_STEP_SUMMARY
+          echo "thetechcollective/gh-downstream: $DOWNSTREAM_SHA"   >> $GITHUB_STEP_SUMMARY
+          echo "lakruzz/gh-semver SHA: $SEMVER_SHA"                 >> $GITHUB_STEP_SUMMARY
+
+          gh rotator version --repo thetechcollective/gh-tt --configuration dev
+          gh rotator manifest --repo thetechcollective/gh-downstream --configuration dev
+          gh rotator manifest --repo lakruzz/gh-semver --configuration dev 
+
+          
