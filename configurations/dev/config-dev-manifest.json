@@ -4,8 +4,8 @@
             "repo": "config-rotator/iac-component",
             "ref_type": "branch",
             "ref_name": "main",
-            "version": "df7e7e398d165090e7911fd7934dbd469f6b0af0",
-            "last_update": "2025-05-19 (14:18:55) [UTC]"
+            "version": "359b9d62778abde47c6db2438d3225bc2c54b4d3",
+            "last_update": "2025-05-19 (14:21:21) [UTC]"
         },
         {
             "repo": "config-rotator/frontend-component",
