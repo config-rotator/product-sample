@@ -1,8 +1,8 @@
-name: Rotate  (Dispatch Trigger)
+name: Rotate Product Configuration
 
 on:
   workflow_dispatch:
-    inputs:
+    inputs: 
       repo:
         description: 'Repo to rotate (owner/repo)'
         required: true
@@ -24,128 +24,22 @@ on:
         type: string
         # Accessible at the caller as ${{github.sha}}
 
-# Add this permissions block
-permissions:
-  contents: write  # This grants write access to repository contents
-
-
 jobs:
-  lock-manifest:
-    runs-on: ubuntu-latest
-    outputs:
-      CONFIGURATION: ${{ steps.set_config.outputs.CONFIGURATION }}
-      COMPONENT_REPO: ${{ steps.set_config.outputs.COMPONENT_REPO }}
-      COMPONENT_EVENT_TYPE: ${{ steps.set_config.outputs.COMPONENT_EVENT_TYPE }}
-      COMPONENT_EVENT_NAME: ${{ steps.set_config.outputs.COMPONENT_EVENT_NAME }}
-      COMPONENT_SHA: ${{ steps.set_config.outputs.COMPONENT_SHA }}
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4       
-        with:
-          fetch-depth: 0
-          ref: main
-          token: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
-          # Fetch all history for all branches and tags
-          # This is required to checking the manifest to the repo
-      
-      - name: Set up git config
-        # This is required to checking the manifest to the repo
-        run: |
-          git config --global user.name "GitHub Action: rotator"
-          git config --global user.email "gh-rotator@thetechcollective.eu"
-
-      - name: Ensure Python
-        # assume python3 is installed, it is in ubuntu-latest, 
-        # but if you are using a different image, you may need to install it
-        run: |
-          command -v python3 || { echo "Python3 is not installed"; exit 1; }
-
-      - name: Install gh extension 'thetechcollective/rotator'
-        # Visit https://github.com/thetechcollective/gh-rotator for more information
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh extension install thetechcollective/gh-rotator
-
-      - name: Receive and Use Trigger Data from Inputs
-        id: set_config
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Update manifest for **${{ inputs.repo }}**" >> $GITHUB_STEP_SUMMARY
-          echo "Triggering event was: **\`${{ inputs.event_type }}:${{ inputs.event_name }}\`**" >> $GITHUB_STEP_SUMMARY
-          echo "Triggering commit was: [**\`${{ inputs.sha }}\`**](https://github.com/${{ inputs.repo }}/commit/${{ inputs.sha }})" >> $GITHUB_STEP_SUMMARY
-
-          # Set env vars from inputs and also set them as outputs
-          echo "COMPONENT_REPO=${{ inputs.repo }}" >> $GITHUB_ENV
-          echo "COMPONENT_REPO=${{ inputs.repo }}" >> $GITHUB_OUTPUT
-          echo "COMPONENT_EVENT_TYPE=${{ inputs.event_type }}" >> $GITHUB_ENV
-          echo "COMPONENT_EVENT_TYPE=${{ inputs.event_type }}" >> $GITHUB_OUTPUT
-          echo "COMPONENT_EVENT_NAME=${{ inputs.event_name }}" >> $GITHUB_ENV
-          echo "COMPONENT_EVENT_NAME=${{ inputs.event_name }}" >> $GITHUB_OUTPUT
-          echo "COMPONENT_SHA=${{ inputs.sha }}" >> $GITHUB_ENV
-          echo "COMPONENT_SHA=${{ inputs.sha }}" >> $GITHUB_OUTPUT
-
-          CONFIGURATION=$(gh rotator config --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }})
-          echo "CONFIGURATION=$CONFIGURATION" >> $GITHUB_OUTPUT
-          echo "CONFIGURATION=$CONFIGURATION" >> $GITHUB_ENV
-
-          gh rotator lock --repo ${{ inputs.repo }} --event-type ${{ inputs.event_type }} --event-name ${{ inputs.event_name }} --sha ${{ inputs.sha }} --verbose
-
-      - name: Commit and Push Manifest Changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
-        run: |
-          git add -A
-          git commit -m "Update manifest for ${{ inputs.repo }}
-            Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'
-            Triggering commit was was https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }} "
-          git push origin main
-
-          echo "Successfully updated the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
-
-  deploy-iac:
-    runs-on: ubuntu-latest
-    needs: lock-manifest
-    env:
-      CONFIGURATION: ${{ needs.lock-manifest.outputs.CONFIGURATION }}
-      COMPONENT_REPO: ${{ needs.lock-manifest.outputs.COMPONENT_REPO }}
-      COMPONENT_EVENT_TYPE: ${{ needs.lock-manifest.outputs.COMPONENT_EVENT_TYPE }}
-      COMPONENT_EVENT_NAME: ${{ needs.lock-manifest.outputs.COMPONENT_EVENT_NAME }}
-      COMPONENT_SHA: ${{ needs.lock-manifest.outputs.COMPONENT_SHA }}
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
-
-      - name: Ensure Python
-        run: |
-          command -v python3 || { echo "Python3 is not installed"; exit 1; }
-
-      - name: Install gh extension 'thetechcollective/rotator'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh extension install thetechcollective/gh-rotator
-
-      - name: Do Your Thing
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Deploying the manifest for '${{ env.CONFIGURATION }}' configuration"
-          echo "Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'"
-          echo "Triggering commit was was: [**\`${{ env.COMPONENT_SHA }}\`**](https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }})"
-
-          echo "Deploying the manifest for the '${{ env.CONFIGURATION }}' configuration"  >> $GITHUB_STEP_SUMMARY
-          echo "Triggering event was: '${{ env.COMPONENT_EVENT_TYPE }}:${{ env.COMPONENT_EVENT_NAME }}'"  >> $GITHUB_STEP_SUMMARY
-          echo "Triggering commit was was: [**\`${{ env.COMPONENT_SHA }}\`**](https://github.com/${{ env.COMPONENT_REPO }}/commit/${{ env.COMPONENT_SHA }})"  >> $GITHUB_STEP_SUMMARY
-
-
-          git pull
-          MANIFEST=$( gh rotator manifest --configuration ${{ env.CONFIGURATION }} )
-
-          echo '```json'       >> $GITHUB_STEP_SUMMARY
-          echo "$MANIFEST"     >> $GITHUB_STEP_SUMMARY
-          echo '```'           >> $GITHUB_STEP_SUMMARY
+  rotate:
+    name: Rotate (lock manifest)
+    permissions:
+      actions: write
+    
+    secrets:
+      token: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
+    
+    uses: thetechcollective/gh-rotator/.github/workflows/rotator.yml@experimental
+    
+    with:
+      repo: ${{ inputs.repo }}
+      event_type: ${{ inputs.event_type }}
+      event_name: ${{ inputs.event_name }}
+      sha: ${{ inputs.sha }}
+      user_name: gh-rotator
+      user_email: gh-rotator@thetechcollective.dev
+      rotator-pin: experimental
