@@ -28,7 +28,7 @@ jobs:
   rotate:
     name: Rotate (lock manifest)
     permissions:
-      actions: write
+      contents: write
     
     secrets:
       token: ${{ secrets.ROTATOR_COMMIT_TOKEN }}
@@ -42,4 +42,4 @@ jobs:
       sha: ${{ inputs.sha }}
       user_name: gh-rotator
       user_email: gh-rotator@thetechcollective.dev
-      rotator-pin: experimental
+      rotator_pin: experimental
