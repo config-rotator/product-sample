@@ -20,6 +20,13 @@
             "ref_name": "",
             "version": "",
             "last_update": ""
+        },
+        {
+            "repo": "config-rotator/be-component",
+            "version": "730bdac277d983ace5b9bf4f1f490f51501a1910",
+            "ref_type": "branch",
+            "ref_name": "main",
+            "last_update": "2025-09-14 (08:11:11) [UTC]"
         }
     ]
 }
